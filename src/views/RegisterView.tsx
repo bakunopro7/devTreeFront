@@ -11,7 +11,9 @@ export const RegisterView = () => {
         password: '',
         password_confirmation: ''
     }
-    const { register, handleSubmit , formState: {errors}} = useForm({defaultValues: initialValues});
+    const { register, handleSubmit, watch , formState: {errors}} = useForm({defaultValues: initialValues});
+
+    const password = watch('password', '');
 
     const onSubmit = () => {
         console.log('hola');
@@ -42,7 +44,13 @@ export const RegisterView = () => {
                         type="email"
                         placeholder="Email de Registro"
                         className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-                        {...register("email", { required: "El correo es obligatorio" })}
+                        {...register("email", {
+                            required: "El correo es obligatorio" ,
+                            pattern: {
+                                value: /\S+@\S+\.\S+/,
+                                message: "E-mail no válido",
+                            },
+                        })}
                     />
                     {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
 
@@ -66,7 +74,13 @@ export const RegisterView = () => {
                         type="password"
                         placeholder="Password de Registro"
                         className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-                        {...register("password", { required: "El password es obligatorio" })}
+                        {...register("password", {
+                            required: "El password es obligatorio",
+                            minLength: {
+                                value: 8,
+                                message: "El password debe tener al menos 8 caracteres"
+                            }
+                        })}
                     />
                     {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
                 </div>
@@ -78,7 +92,10 @@ export const RegisterView = () => {
                         type="password"
                         placeholder="Repetir Password"
                         className="bg-slate-100 border-none p-3 rounded-lg placeholder-slate-400"
-                        {...register("password_confirmation", { required: "El password es obligatorio" })}
+                        {...register("password_confirmation", {
+                            required: "El password es obligatorio",
+                            validate: (value) => value  === password || 'El password no coincide'
+                        })}
                     />
                     {errors.password_confirmation && <ErrorMessage>{errors.password_confirmation.message}</ErrorMessage>}
                 </div>
