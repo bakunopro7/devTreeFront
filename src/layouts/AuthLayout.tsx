@@ -1,4 +1,5 @@
 import {Outlet} from "react-router-dom";
+import {Toaster} from "sonner";
 
 export function AuthLayout() {
     return (
@@ -11,6 +12,7 @@ export function AuthLayout() {
                     </div>
                 </div>
             </div>
+            <Toaster/>
         </>
     );
 }
