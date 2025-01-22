@@ -4,7 +4,7 @@ import {RegisterView} from "./views/RegisterView.tsx";
 import {AuthLayout} from "./layouts/AuthLayout.tsx";
 import AppLayout from "./layouts/AppLayout.tsx";
 import LinkTreeView from "./views/LinkTreeView.tsx";
-import {ProfileView} from "./views/ProfileView.tsx";
+import ProfileView from "./views/ProfileView.tsx";
 
 export default function Router() {
     return (
