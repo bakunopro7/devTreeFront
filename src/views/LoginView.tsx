@@ -11,7 +11,6 @@ function LoginView() {
         email: '',
         password: ''
     }
-
     const  {register, handleSubmit, formState: {errors}} = useForm({defaultValues: initialValues});
     const handleLogin = async (formData: LoginForm) => {
         try {
