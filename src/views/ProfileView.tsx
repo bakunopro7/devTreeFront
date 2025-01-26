@@ -1,16 +1,28 @@
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "../components/ErrorMessage";
+import { useQueryClient } from "@tanstack/react-query";
+import { ProfileForm, User } from "../types";
 
 
 export default function ProfileView() {
-    const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: {
-        handle: '',
-        description: '',
-        
+
+    const queryClient = useQueryClient();
+    const data : User = queryClient.getQueryData(['user'])!; // datos cachados evita segunda consulta
+
+    // const { data, isLoading, isError} = useQuery({
+    //     queryFn: getUser,
+    //     queryKey: ['user'],
+    //     retry: 1,
+    //     refetchOnWindowFocus: false
+    // })
+
+    const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({ defaultValues: {
+        handle: data.handle || '',
+        description: data.description || '',
     } });
 
-    const handleEditProfile =  () => {
-        console.log('hola')
+    const handleEditProfile =  (formData: ProfileForm) => {
+        console.log(formData);
     }
 
     return (
@@ -43,7 +55,13 @@ export default function ProfileView() {
                 <textarea
                     className="border-none bg-slate-100 rounded-lg p-2"
                     placeholder="Tu Descripción"
+                    {...register('description', {
+                        required: "La descripción es obligatoria",
+                    })}
                 />
+                {errors.description && (
+                    <ErrorMessage>{errors.description.message}</ErrorMessage>
+                )}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
