@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "../components/ErrorMessage";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileForm, User } from "../types";
+import { updateProfile } from "../api/DevTreeAPI";
+import { toast } from "sonner";
 
 
 export default function ProfileView() {
@@ -9,20 +11,23 @@ export default function ProfileView() {
     const queryClient = useQueryClient();
     const data : User = queryClient.getQueryData(['user'])!; // datos cachados evita segunda consulta
 
-    // const { data, isLoading, isError} = useQuery({
-    //     queryFn: getUser,
-    //     queryKey: ['user'],
-    //     retry: 1,
-    //     refetchOnWindowFocus: false
-    // })
-
     const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({ defaultValues: {
         handle: data.handle || '',
         description: data.description || '',
     } });
 
+    const updateProfileMutation = useMutation({
+        mutationFn: updateProfile,
+        onError: (error: Error) => {
+            toast.error(error.message)
+        },
+        onSuccess: (data) => {
+            toast.success(data)
+            queryClient.invalidateQueries({ queryKey: ['user'] }) // vuelve a ejecutar la consulta y hace un refecth
+        }
+    })
     const handleEditProfile =  (formData: ProfileForm) => {
-        console.log(formData);
+        updateProfileMutation.mutate(formData)
     }
 
     return (
