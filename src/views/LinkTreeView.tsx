@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { social } from "../data/social";
+import DevTreeInput from "../components/DevTreeInput";
 
 
 function LinkTreeView() {
@@ -7,7 +8,16 @@ function LinkTreeView() {
 
 
     return (
-        <div></div>
+        <>
+            <div className="space-y-5">
+                {socialLinks.map(item => (
+                    <DevTreeInput
+                    key={item.name}
+                    item={item}
+                    />
+                ))}
+            </div>
+        </>
     );
 }
 
