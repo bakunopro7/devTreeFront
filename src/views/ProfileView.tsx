@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileForm, User } from "../types";
-import { updateProfile } from "../api/DevTreeAPI";
+import { updateProfile, uploadImage } from "../api/DevTreeAPI";
 import { toast } from "sonner";
 
 
@@ -26,6 +26,31 @@ export default function ProfileView() {
             queryClient.invalidateQueries({ queryKey: ['user'] }) // vuelve a ejecutar la consulta y hace un refecth
         }
     })
+
+     const uploadImageMutation = useMutation({
+        mutationFn: uploadImage,
+        onError: (error: Error) => {
+            toast.error(error.message)
+        },
+        onSuccess: (data) => { // optimistic data recupera pero la imagen cambia
+            queryClient.setQueryData(['user'], (prevData: User) => {
+                return {
+                    ...prevData,
+                    image: data
+                }
+            })
+        }
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files![0]
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            uploadImageMutation.mutate(file)
+        }
+    }
+
     const handleEditProfile =  (formData: ProfileForm) => {
         updateProfileMutation.mutate(formData)
     }
@@ -79,7 +104,7 @@ export default function ProfileView() {
                     name="handle"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={() => { }}
+                    onChange={handleChange}
                 />
             </div>
 
