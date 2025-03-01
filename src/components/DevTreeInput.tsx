@@ -5,9 +5,11 @@ import { classNames } from '../utils';
 
 type DevTreeInputProps = {
     item: DevTreeLink
+    handleUrlChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    handlEnableLinks: (socialNetwork: string) => void
 }
 
-export default function DevTreeInput({ item }: DevTreeInputProps) {
+export default function DevTreeInput({ item, handleUrlChange, handlEnableLinks }: DevTreeInputProps) {
     return (
         <div className="bg-white shadow-sm p-5 flex items-center gap-3">
             <div className="w-12 h-12 bg-cover"
@@ -15,11 +17,14 @@ export default function DevTreeInput({ item }: DevTreeInputProps) {
             >
                 <input type="text"
                     className="flex-1 border border-gray-100 rounded-lg"
+                    value={item.url}
+                    onChange={handleUrlChange}
+                    name={item.name}
                 />
 
                 <Switch
                     checked={item.enabled}
-                    onChange={() => { }}
+                    onChange={() => handlEnableLinks(item.name)} // se habilida cuando se haceu un cambio por el usuario
                     className={classNames(
                         item.enabled ? 'bg-blue-500' : 'bg-gray-200',
                         'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
